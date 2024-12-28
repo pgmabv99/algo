@@ -1,0 +1,20 @@
+[global]
+ioengine=libaio          # IO engine to use
+direct=1                 # Use direct I/O (bypass cache)
+thread=1                 # Use threads for I/O
+runtime=20               # Run for 60 seconds
+time_based=1             # Run for a fixed time
+group_reporting=1        # Group statistics together
+numjobs=4                # Number of threads/jobs
+
+[read_test]
+rw=read                 # Read workload
+bs=4k                   # Block size
+size=1G                 # Total file size
+filename=read_test_file # File to be used
+
+[write_test]
+rw=write                # Write workload
+bs=4k
+size=1G
+filename=write_test_file
