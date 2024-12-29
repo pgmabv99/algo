@@ -1,7 +1,7 @@
 # algo
 
 # dpdk
-
+```
 git clone https://github.com/DPDK/dpdk.git
 cd dpdk
 
@@ -33,14 +33,15 @@ Cannot init EAL
 4: /lib/x86_64-linux-gnu/libc.so.6 (__libc_start_main+0x8b) [7c6530e2a28b]
 5: dpdk-proc-info (_start+0x25) [5edb9455b665]
 Aborted
+```
 
-
+# spdk with dpdk as  submodule
 
 https://github.com/spdk/spdk
 
 
-used to build vscode launch json 
-
+finding unresolved   to build lbrary list in .vscode/*
+```
 for sym in spdk_json_write_named_string; do
     echo "Searching for $sym:"
     nm -A *.a | grep $sym
@@ -57,19 +58,25 @@ for sym in rte_tel_data_add_dict_uint_hex; do
     echo "Searching for $sym:"
     nm -A *.a | grep $sym
 done
-
+```
 
 12/29/2024
 -use install at https://github.com/spdk/spdk
 
--compile/link/run ok via vscode (aunch/etc)
+-compile/link/run - ok via vscode 
 -run needs root
--fail 
+-fail later
 
-+ lspci -nn
-+ grep -i nvm
+```
+lspci -nn
+ grep -i nvm
 00:04.0 Non-Volatile memory controller [0108]: Amazon.com, Inc. NVMe EBS Controller [1d0f:8061]
-+ sudo env LD_LIBRARY_PATH=/home/ubuntu/spdk/dpdk/build/lib RTE_EAL_PCI_WHITELIST=00:00:04.0 ./spdk_sample
+ sudo env LD_LIBRARY_PATH=/home/ubuntu/spdk/dpdk/build/lib RTE_EAL_PCI_WHITELIST=00:00:04.0 ./spdk_sample
 SPDK environment initialized successfully
 [2024-12-29 22:56:34.004302] nvme.c: 833:nvme_probe_internal: *ERROR*: NVMe trtype 256 (PCIE) not available
 [2024-12-29 22:56:34.004356] nvme.c: 951:spdk_nvme_probe_ext: *ERROR*: Create probe context failed
+```
+
+# todo
+- aws + spdk review
+- vscode run as root
