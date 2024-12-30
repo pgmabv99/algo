@@ -16,7 +16,6 @@
                 {
                   "name": "LD_LIBRARY_PATH",
                   "value": "${workspaceFolder}/../spdk/dpdk/build/lib"
-                //   "value": "/home/ubuntu/spdk/dpdk/build/lib"
                 }
               ],
             "externalConsole": false,
@@ -28,7 +27,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "C/C++: gcc build active file",
+            "preLaunchTask": "Run bld_spdk.sh",
             "miDebuggerPath": "/usr/bin/gdb",
             "logging": {
                 // "trace": true,
