@@ -77,6 +77,43 @@ SPDK environment initialized successfully
 [2024-12-29 22:56:34.004356] nvme.c: 951:spdk_nvme_probe_ext: *ERROR*: Create probe context failed
 ```
 
+
+# vscode remote as root
+
+2 blocks for root/non-root. Have to reboot linux inbetween 
+
+```
+ssh -i C:\Users\alexe\.ssh\av4_m5 ubuntu@18.218.65.153 "sudo -E -u root /bin/bash"
+
+
+Host av4_m5
+    HostName 18.218.65.153
+    User ubuntu
+    IdentityFile C:\Users\alexe\.ssh\av4_m5
+Host av4_m5_root
+    HostName 18.218.65.153
+    User ubuntu
+    IdentityFile C:\Users\alexe\.ssh\av4_m5
+    RemoteCommand /usr/bin/sudo -E -u root /usr/bin/bash
+    RequestTTY yes
+
+
+
+```
+
+setting.json
+```
+    // "remote.SSH.remotePlatform": {
+    //     "av3": "linux",
+    //     "av4_m5": "linux"
+    // },
+    "cmake.showOptionsMovedNotification": false,
+    "workbench.startupEditor": "none",
+    "remote.SSH.useLocalServer": true,
+    "remote.SSH.enableRemoteCommand": true,
+    "remote.SSH.suppressWindowsSshWarning": true
+```
+
 # todo
 - aws + spdk review
-- vscode run as root
+- vscode run as root(done)
