@@ -1,12 +1,4 @@
-#!/bin/bash
-set -e -x
-lspci -nn | grep -i nvm
-lspci -nnk -s 0000:00:04.0
-# list devices  and partitions
-lsblk
-# bashdb ../spdk/scripts/setup_junk.sh
-#this drops the volume
-# echo "0000:00:04.0" | sudo tee /sys/bus/pci/devices/0000:00:04.0/driver/unbind
+
 # sudo modprobe vfio-pci
 # sudo modprobe uio_pci_generic
 
@@ -29,11 +21,4 @@ lsblk
 
 # sudo env "DRIVER_OVERRIDE=vfio-pci" "PCI_ALLOWED=0000:00:04.0" ../spdk/scripts/setup.sh status
 # sudo env "DRIVER_OVERRIDE=vfio_pci" "PCI_ALLOWED=0000:00:04.0" ../spdk/scripts/setup.sh 
-
-echo "0000:00:04.0" | sudo tee /sys/bus/pci/devices/0000:00:04.0/driver/unbind
-echo "uio_pci_generic" | sudo tee /sys/bus/pci/devices/0000:00:04.0/driver_override
-sudo modprobe uio_pci_generic
-sudo env "PCI_ALLOWED=0000:00:04.0" ../spdk/scripts/setup.sh 
-sudo env "PCI_ALLOWED=0000:00:04.0" ../spdk/scripts/setup.sh status
-export LD_LIBRARY_PATH=../spdk/dpdk/build/lib
-sudo env "DRIVER_OVERRIDE=uio_pci_generic" "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" "RTE_EAL_PCI_WHITELIST=0000:00:04.0" ./hello_world
+# echo "uio_pci_generic" | sudo tee /sys/bus/pci/devices/0000:00:04.0/driver_override
