@@ -42,7 +42,8 @@ https://github.com/spdk/spdk
 
 finding unresolved   to build lbrary list in .vscode/*
 ```
-for sym in spdk_json_write_named_string; do
+cd ../spdk/build/lib
+for sym in spdk_pci_vmd_get_driver; do
     echo "Searching for $sym:"
     nm -A *.a | grep $sym
 done
@@ -115,5 +116,5 @@ setting.json
 ```
 
 # todo
-- aws + spdk review
 - vscode run as root(done)
+- aws + spdk review(add 2nd disk)

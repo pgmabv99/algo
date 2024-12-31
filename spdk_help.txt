@@ -1,0 +1,67 @@
+ubuntu@ip-172-31-11-219:~/spdk$ scripts/setup.sh --help
+0000:00:1f.0 (1d0f 8061): Active devices: data@nvme1n1, so not binding PCI dev
+0000:00:04.0 (1d0f 8061): Active devices: mount@nvme0n1:nvme0n1p1,mount@nvme0n1:nvme0n1p15,mount@nvme0n1:nvme0n1p16, so not binding PCI dev
+Invalid argument '--help'
+
+Helper script for allocating hugepages and binding NVMe, I/OAT, VMD and Virtio devices
+to a generic VFIO kernel driver. If VFIO is not available on the system, this script
+will fall back to UIO. NVMe and Virtio devices with active mountpoints will be ignored.
+All hugepage operations use default hugepage size on the system (hugepagesz).
+Usage: setup.sh [config|reset|status|cleanup|interactive|help]
+
+[config|reset|status|cleanup|interactive|help] - as following:
+config            Default mode. Allocate hugepages and bind PCI devices.
+cleanup           Remove any orphaned files that can be left in the system after SPDK application exit
+reset             Rebind PCI devices back to their original drivers.
+                  Also cleanup any leftover spdk files/resources.
+                  Hugepage memory size will remain unchanged.
+status            Print status of all SPDK-compatible devices on the system.
+interactive       Executes script in interactive mode.
+help              Print this help message.
+
+The following environment variables can be specified.
+HUGEMEM           Size of hugepage memory to allocate (in MB). 2048 by default.
+                  For NUMA systems, the hugepages will be distributed on node0 by
+                  default.
+NRHUGE            Number of hugepages to allocate. This variable overwrites HUGEMEM.
+HUGENODE          Specific NUMA node to allocate hugepages on. Multiple nodes can be
+                  separated with comas. By default, NRHUGE will be applied on each node.
+                  Hugepages can be defined per node with e.g.:
+                  HUGENODE='nodes_hp[0]=2048,nodes_hp[1]=512,2' - this will allocate
+                  2048 pages for node0, 512 for node1 and default NRHUGE for node2.
+HUGEPGSZ          Size of the hugepages to use in kB. If not set, kernel's default
+                  setting is used.
+SHRINK_HUGE       If set to 'yes', hugepages allocation won't be skipped in case
+                  number of requested hugepages is lower from what's already
+                  allocated.
+CLEAR_HUGE        If set to 'yes', the attempt to remove hugepages from all nodes will
+                  be made prior to allocation.
+PCI_ALLOWED
+PCI_BLOCKED       Whitespace separated list of PCI devices (NVMe, I/OAT, VMD, Virtio).
+                  Each device must be specified as a full PCI address.
+                  E.g. PCI_ALLOWED="0000:01:00.0 0000:02:00.0"
+                  To block all PCI devices: PCI_ALLOWED="none"
+                  To allow all PCI devices except 0000:01:00.0: PCI_BLOCKED="0000:01:00.0"
+                  To allow only PCI device 0000:01:00.0: PCI_ALLOWED="0000:01:00.0"
+                  If PCI_ALLOWED and PCI_BLOCKED are empty or unset, all PCI devices
+                  will be bound.
+                  Each device in PCI_BLOCKED will be ignored (driver won't be changed).
+                  PCI_BLOCKED has precedence over PCI_ALLOWED.
+TARGET_USER       User that will own hugepage mountpoint directory and vfio groups.
+                  By default the current user will be used.
+DRIVER_OVERRIDE   Disable automatic vfio-pci/uio_pci_generic selection and forcefully
+                  bind devices to the given driver.
+                  E.g. DRIVER_OVERRIDE=uio_pci_generic or DRIVER_OVERRIDE=/home/public/dpdk/build/kmod/igb_uio.ko
+PCI_BLOCK_SYNC_ON_RESET
+                  If set in the environment, the attempt to wait for block devices associated
+                  with given PCI device will be made upon reset
+UNBIND_ENTIRE_IOMMU_GROUP
+                  If set, all devices from nvme's iommu group will be unbound from their drivers.
+                  Use with caution.
+DEV_TYPE
+                  Perform action only against selected type of devices. Supported:
+                    IOAT|DSA|IAA|VIRTIO|VMD|NVME.
+                  Default is to select all types.
+FORCE_NIC_UIO_REBIND
+                  When set to 'yes', an attempt to reload nic_uio will be made regardless
+                  of the kernel environment. Applicable only under FreeBSD.
