@@ -10,6 +10,7 @@
 
 # Bind the device to vfio-pci driver
 # echo "0000:00:04.0" | sudo tee /sys/bus/pci/drivers/vfio-pci/bind
+# echo "0000:00:04.0" | sudo tee /sys/bus/pci/drivers/uio_pci_generic/bind
 # echo "0000:00:04.0" | sudo tee /sys/bus/pci/drivers/nvme/bind
 
 
