@@ -1,0 +1,11 @@
+#  SPDX-License-Identifier: BSD-3-Clause
+#  Copyright (C) 2015 Intel Corporation.
+#  All rights reserved.
+#
+
+SPDK_ROOT_DIR := $(HOME)/spdk
+
+# APP = hello_world
+APP = $(CURDIR)/hello_world
+
+include $(SPDK_ROOT_DIR)/mk/nvme.libtest.mk

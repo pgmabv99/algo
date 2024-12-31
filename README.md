@@ -1,44 +1,18 @@
 # algo
 
-# dpdk
+
+
+# spdk with dpdk as  submodule
 ```
-git clone https://github.com/DPDK/dpdk.git
-cd dpdk
-
-meson setup build
-ninja -C build
-sudo ninja -C build install
-
-
+git clone https://github.com/spdk/spdk
+cd spdk
+git submodule update --init
+./configure --enable-debug
+make
 sudo sysctl -w vm.nr_hugepages=1024
 sudo sh -c 'echo "vm.nr_hugepages=1024" >> /etc/sysctl.conf'
 sudo sysctl -p
-
-
-sudo modprobe uio
-sudo modprobe igb_uio   --not founf
-sudo modprobe vfio-pci
-
-crash
-
-ubuntu@ip-172-31-11-219:~/dpdk$ sudo dpdk-proc-info
-EAL: Cannot open '/var/run/dpdk/rte/config' for rte_mem_config
-EAL: Cannot init config
-EAL: PANIC in main():
-Cannot init EAL
-0: dpdk-proc-info (rte_dump_stack+0x42) [5edb947711d2]
-1: dpdk-proc-info (__rte_panic+0xd0) [5edb942b8b4c]
-2: dpdk-proc-info (5edb94128000+0x16d80e) [5edb9429580e]
-3: /lib/x86_64-linux-gnu/libc.so.6 (7c6530e00000+0x2a1ca) [7c6530e2a1ca]
-4: /lib/x86_64-linux-gnu/libc.so.6 (__libc_start_main+0x8b) [7c6530e2a28b]
-5: dpdk-proc-info (_start+0x25) [5edb9455b665]
-Aborted
 ```
-
-# spdk with dpdk as  submodule
-
-https://github.com/spdk/spdk
-
 
 finding unresolved   to build lbrary list in .vscode/*
 ```
@@ -78,6 +52,9 @@ SPDK environment initialized successfully
 [2024-12-29 22:56:34.004356] nvme.c: 951:spdk_nvme_probe_ext: *ERROR*: Create probe context failed
 ```
 
+12/31
+-switch to amazon linux
+-switch to make file 
 
 # vscode remote as root
 
@@ -117,4 +94,4 @@ setting.json
 
 # todo
 - vscode run as root(done)
-- aws + spdk review(add 2nd disk)
+- aws + spdk review(add 2nd disk) (done)

@@ -1,0 +1,37 @@
+[ec2-user@ip-172-31-3-147 hello_world]$ make V=1
+echo "  CC hello_world/hello_world.o"; 
+cc -o hello_world.o -MMD -MP -MF hello_world.d.tmp -g -Wall -Wextra -Wno-unused-parameter \
+-Wno-missing-field-initializers -Wmissing-declarations -fno-strict-aliasing \
+-I/home/ec2-user/spdk/include -march=native -mno-avx512f -fno-lto -Wformat -Wformat-security \
+-D_GNU_SOURCE -fPIC -fstack-protector -fno-common -I/home/ec2-user/spdk/isa-l/.. \
+-I/home/ec2-user/spdk/isalbuild -I/home/ec2-user/spdk/isa-l-crypto/.. -I/home/ec2-user/spdk/isalcryptobuild \
+-DDEBUG -g3 -O0 -fno-omit-frame-pointer -DSPDK_GIT_COMMIT=e01cb43b8 -pthread -Wno-pointer-sign \
+-Wstrict-prototypes -Wold-style-definition -std=gnu11 -c hello_world.c && mv -f hello_world.d.tmp hello_world.d \
+&& touch -c hello_world.o
+    CC hello_world/hello_world.o
+echo "  LINK hello_world"; 
+cc -o /home/ec2-user/spdk/build/examples/hello_world -g -Wall -Wextra -Wno-unused-parameter \
+-Wno-missing-field-initializers -Wmissing-declarations -fno-strict-aliasing -I/home/ec2-user/spdk/include \
+-march=native -mno-avx512f -fno-lto -Wformat -Wformat-security -D_GNU_SOURCE -fPIC -fstack-protector \
+-fno-common -I/home/ec2-user/spdk/isa-l/.. -I/home/ec2-user/spdk/isalbuild -I/home/ec2-user/spdk/isa-l-crypto/.. \
+-I/home/ec2-user/spdk/isalcryptobuild -DDEBUG -g3 -O0 -fno-omit-frame-pointer -DSPDK_GIT_COMMIT=e01cb43b8 \
+-pthread -Wno-pointer-sign -Wstrict-prototypes -Wold-style-definition -std=gnu11 -fno-lto -Wl,-z,relro,-z,now \
+-Wl,-z,noexecstack -fuse-ld=bfd hello_world.o -L/home/ec2-user/spdk/build/lib -Wl,--whole-archive -Wl,--no-as-needed \
+-lspdk_sock_posix -lspdk_thread -lspdk_nvme -lspdk_keyring -lspdk_sock -lspdk_trace -lspdk_rpc -lspdk_jsonrpc \
+-lspdk_json -lspdk_dma -lspdk_vmd -lspdk_util -lspdk_log -Wl,--no-whole-archive /home/ec2-user/spdk/build/lib/libspdk_env_dpdk.a \
+-Wl,--whole-archive /home/ec2-user/spdk/dpdk/build/lib/librte_bus_pci.a /home/ec2-user/spdk/dpdk/build/lib/librte_cryptodev.a \
+/home/ec2-user/spdk/dpdk/build/lib/librte_dmadev.a /home/ec2-user/spdk/dpdk/build/lib/librte_eal.a /home/ec2-user/spdk/dpdk/build/lib/librte_ethdev.a \
+/home/ec2-user/spdk/dpdk/build/lib/librte_hash.a /home/ec2-user/spdk/dpdk/build/lib/librte_kvargs.a /home/ec2-user/spdk/dpdk/build/lib/librte_log.a \
+/home/ec2-user/spdk/dpdk/build/lib/librte_mbuf.a /home/ec2-user/spdk/dpdk/build/lib/librte_mempool.a /home/ec2-user/spdk/dpdk/build/lib/librte_mempool_ring.a \
+/home/ec2-user/spdk/dpdk/build/lib/librte_net.a /home/ec2-user/spdk/dpdk/build/lib/librte_pci.a /home/ec2-user/spdk/dpdk/build/lib/librte_power.a \
+/home/ec2-user/spdk/dpdk/build/lib/librte_rcu.a /home/ec2-user/spdk/dpdk/build/lib/librte_ring.a /home/ec2-user/spdk/dpdk/build/lib/librte_telemetry.a \
+/home/ec2-user/spdk/dpdk/build/lib/librte_vhost.a -Wl,--no-whole-archive -lnuma -ldl /home/ec2-user/spdk/isa-l/.libs/libisal.a \
+/home/ec2-user/spdk/isa-l-crypto/.libs/libisal_crypto.a -pthread -lrt -luuid -lssl -lcrypto -lm -lfuse3 -lkeyutils -laio
+    LINK hello_world\\[ec2-user@ip-172-31-3-147 hello_world]$ sudo /home/ec2-user/spdk/build/examples/hello_world 
+Initializing NVMe Controllers
+Attaching to 0000:00:04.0
+Attached to 0000:00:04.0
+  Namespace ID: 1 size: 475GB
+Initialization complete.
+INFO: using host memory buffer for IO
+Hello world!

@@ -1,17 +1,15 @@
 {
     "tasks": [
         {
-            "label": "Run bld_spdk.sh",
+            "label": "Run make",
             "type": "shell",
-            "command": "${workspaceFolder}/bld_spdk.sh",
-            "args": [
-                "${file}"
-            ],
+            "command": "make clean && make ",
+            "args": [],
             "options": {
-                "cwd": "${workspaceFolder}"
+            "cwd": "${fileDirname}"
             },
             "problemMatcher": []
-        }
+        },
     ],
     "version": "2.0.0"
 }
