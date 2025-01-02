@@ -3,6 +3,7 @@
 #  All rights reserved.
 #
 
+# SPDK_ROOT_DIR := /home/pgmabv/spdk
 SPDK_ROOT_DIR := /home/ec2-user/spdk
 
 # APP = hello_world

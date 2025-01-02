@@ -7,8 +7,12 @@
 git clone https://github.com/spdk/spdk
 cd spdk
 git submodule update --init
+sudo ./scripts/pkgdep.sh
+# needed on wsl ubuntu
+sudo apt-get install -y python3-pyelftools 
 ./configure --enable-debug
 make
+./test/unit/unittest.sh
 sudo sysctl -w vm.nr_hugepages=1024
 sudo sh -c 'echo "vm.nr_hugepages=1024" >> /etc/sysctl.conf'
 sudo sysctl -p
@@ -52,9 +56,21 @@ SPDK environment initialized successfully
 [2024-12-29 22:56:34.004356] nvme.c: 951:spdk_nvme_probe_ext: *ERROR*: Create probe context failed
 ```
 
-12/31
--switch to amazon linux
--switch to make file 
+# work log
+
+### 12/28-30
+-aws ubuntu
+-manual compile
+-run errs
+### 12/31
+- switch to amazon linux
+- switch to make file 
+- hello worl seems to run to "hello"
+### 1/2
+- attempt at wsl 
+- python missing package->olk
+- look for simulator. seems like little usage and no instructions
+
 
 # vscode remote as root
 

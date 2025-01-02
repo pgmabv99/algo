@@ -5,6 +5,10 @@
 # sudo modprobe -r vfio-pci
 # sudo modprobe vfio-pci enable_unsafe_noiommu_mode=1
 
+
+readlink -f /sys/block/nvme0n1/device
+readlink -f /sys/block/nvme1n1/device
+
 # Set the driver override for the device
 # echo "vfio-pci" | sudo tee /sys/bus/pci/devices/0000:00:04.0/driver_override
 
@@ -20,6 +24,15 @@
 # sudo mkdir /mnt/partition1
 # sudo mount /dev/nvme1n1p1 /mnt/partition1
 
+# sudo ./scripts/setup.sh status
 # sudo env "DRIVER_OVERRIDE=vfio-pci" "PCI_ALLOWED=0000:00:04.0" ../spdk/scripts/setup.sh status
 # sudo env "DRIVER_OVERRIDE=vfio_pci" "PCI_ALLOWED=0000:00:04.0" ../spdk/scripts/setup.sh 
 # echo "uio_pci_generic" | sudo tee /sys/bus/pci/devices/0000:00:04.0/driver_override
+
+
+sudo $HOME/spdk/app/bdev/bdevperf/bdevperf -c /home/pgmabv/algo/spdk_sim.cfg
+
+#simulation
+sudo ./build/bin/spdk_tgt
+sudo ./scripts/rpc.py bdev_null_create null0 512 4096
+sudo ./scripts/rpc.py bdev_get_bdevs
