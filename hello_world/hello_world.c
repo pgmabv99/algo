@@ -44,6 +44,7 @@ struct hello_world_sequence {
 static void
 read_complete(void *arg, const struct spdk_nvme_cpl *completion)
 {
+	printf("==Entering function: %s\n", __func__);
 	struct hello_world_sequence *sequence = arg;
 
 	/* Assume the I/O was successful */
@@ -78,6 +79,7 @@ read_complete(void *arg, const struct spdk_nvme_cpl *completion)
 static void
 write_complete(void *arg, const struct spdk_nvme_cpl *completion)
 {
+	printf("==Entering function: %s\n", __func__);
 	struct hello_world_sequence	*sequence = arg;
 	struct ns_entry			*ns_entry = sequence->ns_entry;
 	int				rc;
