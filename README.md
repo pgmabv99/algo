@@ -1,8 +1,5 @@
-# algo
 
-
-
-# spdk make + pages + device setup
+### spdk make + pages + device setup
 ```
 sudo dnf install git -y
 git config --global user.name "alexey vorovich"
@@ -39,23 +36,12 @@ sudo env "PCI_ALLOWED=0000:00:04.0" /home/ec2-user/spdk/scripts/setup.sh status
 
 
 
-
-```
-lspci -nn
- grep -i nvm
-00:04.0 Non-Volatile memory controller [0108]: Amazon.com, Inc. NVMe EBS Controller [1d0f:8061]
- sudo env LD_LIBRARY_PATH=/home/ubuntu/spdk/dpdk/build/lib RTE_EAL_PCI_WHITELIST=00:00:04.0 ./spdk_sample
-SPDK environment initialized successfully
-[2024-12-29 22:56:34.004302] nvme.c: 833:nvme_probe_internal: *ERROR*: NVMe trtype 256 (PCIE) not available
-[2024-12-29 22:56:34.004356] nvme.c: 951:spdk_nvme_probe_ext: *ERROR*: Create probe context failed
-```
-
-# work log
-### todo
+### work log
+#### todo
  - split hello
  - confirm write with read ??
 
-### 1/2
+#### 1/2
 - attempt at wsl on laptop
 - python missing package fir elk symbol .. fixed after 2 h
 - look for simulator. seems like little usage and no instructions.fail
@@ -64,26 +50,28 @@ SPDK environment initialized successfully
 - create by hand make2.sh to allow split of c code 
 - cleanup to remove dup flag for link
 
-### 12/31
+#### 12/31
 - switch to amazon linux
 - switch to make file 
 - hello worl seems to run to "hello"
-### 12/30
+#### 12/30
 - aws ubuntu
 - manual compile
 - run errs
-### 12/29 
+#### 12/29 
 - use install at https://github.com/spdk/spdk
 - compile/link/run - ok via vscode 
 - run needs root
 - fail later
 
 
-# vscode remote as root
+### vscode remote as root
 
-2 blocks for root/non-root. Have to reboot linux inbetween 
+
+2 blocks for root/non-root. Have to reboot linux inbetween (maybe)
 
 ```
+needed at fitst connect to new instance
 ssh -i C:\Users\alexe\.ssh\av4_m5 ubuntu@18.218.65.153 "sudo -E -u root /bin/bash"
 
 
