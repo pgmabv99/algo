@@ -514,7 +514,7 @@ main(int argc, char **argv)
 	printf("hello_world complete.\n");
 
 exit:
-	printf("Exiting bad 2\n");
+	printf("Exiting bad 3\n");
 	fflush(stdout);
 	cleanup();
 	if (g_vmd) {

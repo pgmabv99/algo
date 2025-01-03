@@ -9,6 +9,11 @@ rm -f $HOME_ALGO/$APP/*.d
 rm -f $HOME_ALGO/$APP/$APP
 echo "  compile"; 
 cc -o $HOME_ALGO/$APP/$APP.o \
+    -I$HOME_SPDK/include \
+    -I$HOME_SPDK/isa-l/.. \
+    -I$HOME_SPDK/isalbuild \
+    -I$HOME_SPDK/isa-l-crypto/.. \
+    -I$HOME_SPDK/isalcryptobuild \
     -MMD \
     -MP \
     -MF $HOME_ALGO/$APP/$APP.d.tmp \
@@ -19,7 +24,6 @@ cc -o $HOME_ALGO/$APP/$APP.o \
     -Wno-missing-field-initializers \
     -Wmissing-declarations \
     -fno-strict-aliasing \
-    -I$HOME_SPDK/include \
     -march=native \
     -mno-avx512f \
     -fno-lto \
@@ -29,10 +33,6 @@ cc -o $HOME_ALGO/$APP/$APP.o \
     -fPIC \
     -fstack-protector \
     -fno-common \
-    -I$HOME_SPDK/isa-l/.. \
-    -I$HOME_SPDK/isalbuild \
-    -I$HOME_SPDK/isa-l-crypto/.. \
-    -I$HOME_SPDK/isalcryptobuild \
     -DDEBUG \
     -g3 \
     -O0 \
@@ -55,7 +55,6 @@ cc -o $HOME_ALGO/$APP/$APP \
     -Wno-missing-field-initializers \
     -Wmissing-declarations \
     -fno-strict-aliasing \
-    -I$HOME_SPDK/include \
     -march=native \
     -mno-avx512f \
     -fno-lto \
@@ -65,10 +64,6 @@ cc -o $HOME_ALGO/$APP/$APP \
     -fPIC \
     -fstack-protector \
     -fno-common \
-    -I$HOME_SPDK/isa-l/.. \
-    -I$HOME_SPDK/isalbuild \
-    -I$HOME_SPDK/isa-l-crypto/.. \
-    -I$HOME_SPDK/isalcryptobuild \
     -DDEBUG \
     -g3 \
     -O0 \
