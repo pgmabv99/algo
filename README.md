@@ -5,8 +5,9 @@ sudo dnf install git -y
 git config --global user.name "alexey vorovich"
 git config --global user.email "alexey.vorovich@gmail.com"
 sudo dnf install gdb -y
-git clone https://github.com/pgmabv/algo
+git clone https://github.com/pgmabv99/algo
 
+cd $HOME
 git clone https://github.com/spdk/spdk
 cd spdk
 git submodule update --init
@@ -16,6 +17,7 @@ sudo ./scripts/pkgdep.sh
 ./configure --enable-debug
 make
 ./test/unit/unittest.sh
+
 #  huge pages do not change physcal adress
 sudo sysctl -w vm.nr_hugepages=1024
 sudo sh -c 'echo "vm.nr_hugepages=1024" >> /etc/sysctl.conf'
@@ -23,10 +25,10 @@ sudo sysctl -p
 
 #list drivers
 lspci -nn | grep -i nvm
-lspci -nnk -s 0000:00:04.0
+# lspci -nnk -s 0000:00:04.0
 # list devices  and partitions
 lsblk
-
+# unbind default drive etc
 echo "0000:00:04.0" | sudo tee /sys/bus/pci/devices/0000:00:04.0/driver/unbind
 sudo modprobe uio_pci_generic
 sudo env "PCI_ALLOWED=0000:00:04.0" /home/ec2-user/spdk/scripts/setup.sh 

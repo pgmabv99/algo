@@ -7,45 +7,47 @@ export APP=hello_world
 rm -f $HOME_ALGO/$APP/*.o
 rm -f $HOME_ALGO/$APP/*.d
 rm -f $HOME_ALGO/$APP/$APP
-echo "  compile"; 
-cc  -o $HOME_ALGO/$APP/$APP.o \
-    -c $HOME_ALGO/$APP/$APP.c \
-    -I$HOME_SPDK/include \
-    -I$HOME_SPDK/isa-l/.. \
-    -I$HOME_SPDK/isalbuild \
-    -I$HOME_SPDK/isa-l-crypto/.. \
-    -I$HOME_SPDK/isalcryptobuild \
-    -MMD \
-    -MP \
-    -MF $HOME_ALGO/$APP/$APP.d.tmp \
-    -g \
-    -Wall \
-    -Wextra \
-    -Wno-unused-parameter \
-    -Wno-missing-field-initializers \
-    -Wmissing-declarations \
-    -fno-strict-aliasing \
-    -march=native \
-    -mno-avx512f \
-    -fno-lto \
-    -Wformat \
-    -Wformat-security \
-    -D_GNU_SOURCE \
-    -fPIC \
-    -fstack-protector \
-    -fno-common \
-    -DDEBUG \
-    -g3 \
-    -O0 \
-    -fno-omit-frame-pointer \
-    -DSPDK_GIT_COMMIT=d57bac3 \
-    -pthread \
-    -Wno-pointer-sign \
-    -Wstrict-prototypes \
-    -Wold-style-definition \
-    -std=gnu11 \
-    && mv -f $HOME_ALGO/$APP/$APP.d.tmp $HOME_ALGO/$APP/$APP.d \
-    && touch -c $HOME_ALGO/$APP/$APP.o
+
+compile_app() {
+    echo "  compile  $FNAME"; 
+    local FNAME=$1
+    cc  -o $HOME_ALGO/$APP/$FNAME.o \
+        -c $HOME_ALGO/$APP/$FNAME.c \
+        -I$HOME_SPDK/include \
+        -I$HOME_SPDK/isa-l/.. \
+        -I$HOME_SPDK/isalbuild \
+        -I$HOME_SPDK/isa-l-crypto/.. \
+        -I$HOME_SPDK/isalcryptobuild \
+        -g \
+        -Wall \
+        -Wextra \
+        -Wno-unused-parameter \
+        -Wno-missing-field-initializers \
+        -Wmissing-declarations \
+        -fno-strict-aliasing \
+        -march=native \
+        -mno-avx512f \
+        -fno-lto \
+        -Wformat \
+        -Wformat-security \
+        -D_GNU_SOURCE \
+        -fPIC \
+        -fstack-protector \
+        -fno-common \
+        -DDEBUG \
+        -g3 \
+        -O0 \
+        -fno-omit-frame-pointer \
+        -DSPDK_GIT_COMMIT=d57bac3 \
+        -pthread \
+        -Wno-pointer-sign \
+        -Wstrict-prototypes \
+        -Wold-style-definition \
+        -std=gnu11 
+}
+
+compile_app $APP
+
 echo "  LINK "; 
 cc -o $HOME_ALGO/$APP/$APP \
     $HOME_ALGO/$APP/$APP.o \
