@@ -71,8 +71,7 @@ sudo env "PCI_ALLOWED=0000:00:04.0" /home/ec2-user/spdk/scripts/setup.sh status
 2 blocks for root/non-root. Have to reboot linux inbetween (maybe)
 
 ```
-needed at fitst connect to new instance
-ssh -i C:\Users\alexe\.ssh\av4_m5 ubuntu@18.218.65.153 "sudo -E -u root /bin/bash"
+ssh -i C:\Users\alexe\.ssh\av4 ec2-user@3.14.249.4 "sudo -E -u root /bin/bash"
 
 
 Host av4_m5
