@@ -195,6 +195,7 @@ hello_world(void)
 		 *  qpair.  This enables extremely efficient I/O processing by making all
 		 *  I/O operations completely lockless.
 		 */
+		printf("call spdk_nvme_ctrlr_alloc_io_qpair\n");
 		ns_entry->qpair = spdk_nvme_ctrlr_alloc_io_qpair(ns_entry->ctrlr, NULL, 0);
 		if (ns_entry->qpair == NULL) {
 			printf("ERROR: spdk_nvme_ctrlr_alloc_io_qpair() failed\n");
@@ -207,9 +208,11 @@ hello_world(void)
 		 * I/O operations.
 		 */
 		sequence.using_cmb_io = 1;
+		printf("call spdk_nvme_ctrlr_map_cmb\n");
 		sequence.buf = spdk_nvme_ctrlr_map_cmb(ns_entry->ctrlr, &sz);
 		if (sequence.buf == NULL || sz < 0x1000) {
 			sequence.using_cmb_io = 0;
+			printf("call spdk_zmalloc\n");
 			sequence.buf = spdk_zmalloc(0x1000, 0x1000, NULL, SPDK_ENV_NUMA_ID_ANY, SPDK_MALLOC_DMA);
 		}
 		if (sequence.buf == NULL) {
@@ -254,6 +257,7 @@ hello_world(void)
 		 *  It is the responsibility of the application to trigger the polling
 		 *  process.
 		 */
+		printf("call spdk_nvme_ns_cmd_write\n");
 		rc = spdk_nvme_ns_cmd_write(ns_entry->ns, ns_entry->qpair, sequence.buf,
 					    0, /* LBA start */
 					    1, /* number of LBAs */
@@ -277,6 +281,7 @@ hello_world(void)
 		 *  break this loop and then exit the program.
 		 */
 		while (!sequence.is_completed) {
+			printf("call spdk_nvme_qpair_process_completions\n");
 			spdk_nvme_qpair_process_completions(ns_entry->qpair, 0);
 		}
 
@@ -286,6 +291,7 @@ hello_world(void)
 		 *  operation.  It is the responsibility of the caller to ensure all
 		 *  pending I/O are completed before trying to free the qpair.
 		 */
+		printf("call spdk_nvme_ctrlr_free_io_qpair\n");
 		spdk_nvme_ctrlr_free_io_qpair(ns_entry->qpair);
 	}
 }
@@ -324,6 +330,7 @@ attach_cb(void *cb_ctx, const struct spdk_nvme_transport_id *trid,
 	 *  detailed information on the controller.  Refer to the NVMe
 	 *  specification for more details on IDENTIFY for NVMe controllers.
 	 */
+	printf("call spdk_nvme_ctrlr_get_data\n");
 	cdata = spdk_nvme_ctrlr_get_data(ctrlr);
 
 	snprintf(entry->name, sizeof(entry->name), "%-20.20s (%-20.20s)", cdata->mn, cdata->sn);
@@ -474,7 +481,7 @@ main(int argc, char **argv)
 		return 1;
 	}
 
-	printf("Initializing NVMe Controllers\n");
+	printf("Initializing NVMe Controllers :spdk_vmd_init\n");
 
 	if (g_vmd && spdk_vmd_init()) {
 		fprintf(stderr, "Failed to initialize VMD."
@@ -488,6 +495,7 @@ main(int argc, char **argv)
 	 *  called for each controller after the SPDK NVMe driver has completed
 	 *  initializing the controller we chose to attach.
 	 */
+	printf("call spdk_nvme_probe\n");
 	rc = spdk_nvme_probe(&g_trid, NULL, probe_cb, attach_cb, NULL);
 	if (rc != 0) {
 		fprintf(stderr, "spdk_nvme_probe() failed\n");

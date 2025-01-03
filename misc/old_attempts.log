@@ -36,3 +36,27 @@ sudo $HOME/spdk/app/bdev/bdevperf/bdevperf -c /home/pgmabv/algo/spdk_sim.cfg
 sudo ./build/bin/spdk_tgt
 sudo ./scripts/rpc.py bdev_null_create null0 512 4096
 sudo ./scripts/rpc.py bdev_get_bdevs
+
+
+#by hand linking step (failed)
+
+finding unresolved   to build lbrary list in .vscode/*
+```
+cd ../spdk/build/lib
+for sym in spdk_pci_vmd_get_driver; do
+    echo "Searching for $sym:"
+    nm -A *.a | grep $sym
+done
+
+Searching for spdk_nvme_probe:
+libspdk_bdev_nvme.a:bdev_nvme.o:                 U spdk_nvme_probe_async
+libspdk_bdev_nvme.a:bdev_nvme.o:                 U spdk_nvme_probe_poll_async
+libspdk_nvme.a:nvme.o:0000000000002b10 T spdk_nvme_probe
+libspdk_nvme.a:nvme.o:00000000000025d0 T spdk_nvme_probe_async
+
+
+for sym in rte_tel_data_add_dict_uint_hex; do
+    echo "Searching for $sym:"
+    nm -A *.a | grep $sym
+done
+```

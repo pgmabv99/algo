@@ -2,49 +2,41 @@
 
 
 
-# spdk with dpdk as  submodule
+# spdk make + pages + device setup
 ```
+sudo dnf install git -y
+sudo dnf install gdb -y
+git clone https://github.com/pgmabv/algo
+
 git clone https://github.com/spdk/spdk
 cd spdk
 git submodule update --init
 sudo ./scripts/pkgdep.sh
 # needed on wsl ubuntu
-sudo apt-get install -y python3-pyelftools 
+# sudo apt-get install -y python3-pyelftools 
 ./configure --enable-debug
 make
 ./test/unit/unittest.sh
+#  huge pages do not change physcal adress
 sudo sysctl -w vm.nr_hugepages=1024
 sudo sh -c 'echo "vm.nr_hugepages=1024" >> /etc/sysctl.conf'
 sudo sysctl -p
+
+#list drivers
+lspci -nn | grep -i nvm
+lspci -nnk -s 0000:00:04.0
+# list devices  and partitions
+lsblk
+
+echo "0000:00:04.0" | sudo tee /sys/bus/pci/devices/0000:00:04.0/driver/unbind
+sudo modprobe uio_pci_generic
+sudo env "PCI_ALLOWED=0000:00:04.0" /home/ec2-user/spdk/scripts/setup.sh 
+sudo env "PCI_ALLOWED=0000:00:04.0" /home/ec2-user/spdk/scripts/setup.sh status
+
 ```
 
-finding unresolved   to build lbrary list in .vscode/*
-```
-cd ../spdk/build/lib
-for sym in spdk_pci_vmd_get_driver; do
-    echo "Searching for $sym:"
-    nm -A *.a | grep $sym
-done
-
-Searching for spdk_nvme_probe:
-libspdk_bdev_nvme.a:bdev_nvme.o:                 U spdk_nvme_probe_async
-libspdk_bdev_nvme.a:bdev_nvme.o:                 U spdk_nvme_probe_poll_async
-libspdk_nvme.a:nvme.o:0000000000002b10 T spdk_nvme_probe
-libspdk_nvme.a:nvme.o:00000000000025d0 T spdk_nvme_probe_async
 
 
-for sym in rte_tel_data_add_dict_uint_hex; do
-    echo "Searching for $sym:"
-    nm -A *.a | grep $sym
-done
-```
-
-12/29/2024
--use install at https://github.com/spdk/spdk
-
--compile/link/run - ok via vscode 
--run needs root
--fail later
 
 ```
 lspci -nn
@@ -57,19 +49,26 @@ SPDK environment initialized successfully
 ```
 
 # work log
+### 1/2
+- attempt at wsl on laptop
+- python missing package fir elk symbol .. fixed after 2 h
+- look for simulator. seems like little usage and no instructions.fail
+- back to aws i3.large with gp3 to save cost.
+- stepping/logging  in hello_world.  seems that spdk_nvme_ns_cmd_write does not retrun err :) 
 
-### 12/28-30
--aws ubuntu
--manual compile
--run errs
 ### 12/31
 - switch to amazon linux
 - switch to make file 
 - hello worl seems to run to "hello"
-### 1/2
-- attempt at wsl 
-- python missing package->olk
-- look for simulator. seems like little usage and no instructions
+### 12/30
+- aws ubuntu
+- manual compile
+- run errs
+### 12/29 
+- use install at https://github.com/spdk/spdk
+- compile/link/run - ok via vscode 
+- run needs root
+- fail later
 
 
 # vscode remote as root
