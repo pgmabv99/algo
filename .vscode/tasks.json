@@ -10,6 +10,16 @@
             },
             "problemMatcher": []
         },
+        {
+            "label": "Run make2.sh",
+            "type": "shell",
+            "command": "${workspaceFolder}/make2.sh ",
+            "args": [],
+            "options": {
+            "cwd": "${fileDirname}"
+            },
+            "problemMatcher": []
+        },
     ],
     "version": "2.0.0"
 }

@@ -511,13 +511,16 @@ main(int argc, char **argv)
 
 	printf("Initialization complete.\n");
 	hello_world();
+	printf("hello_world complete.\n");
 
 exit:
+	printf("Exiting bad 2\n");
 	fflush(stdout);
 	cleanup();
 	if (g_vmd) {
 		spdk_vmd_fini();
 	}
+
 
 	spdk_env_fini();
 	return rc;

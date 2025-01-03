@@ -27,7 +27,8 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "Run make",
+            "preLaunchTask": "Run make2.sh",
+            // "preLaunchTask": "Run make",
             "miDebuggerPath": "/usr/bin/gdb",
             "logging": {
                 // "trace": true,

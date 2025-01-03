@@ -51,12 +51,17 @@ SPDK environment initialized successfully
 ```
 
 # work log
+### todo
+ - split hello
+ - confirm write with read ??
+
 ### 1/2
 - attempt at wsl on laptop
 - python missing package fir elk symbol .. fixed after 2 h
 - look for simulator. seems like little usage and no instructions.fail
 - back to aws i3.large with gp3 to save cost.
-- stepping/logging  in hello_world.  seems that spdk_nvme_ns_cmd_write does not retrun err :) 
+- stepping/logging  in hello_world.  seems that spdk_nvme_ns_cmd_write does not retrun err :)
+- create by hand make2.sh to allow split of c code 
 
 ### 12/31
 - switch to amazon linux
@@ -109,6 +114,3 @@ setting.json
     "remote.SSH.suppressWindowsSshWarning": true
 ```
 
-# todo
-- vscode run as root(done)
-- aws + spdk review(add 2nd disk) (done)
