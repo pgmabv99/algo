@@ -4,8 +4,9 @@ export HOME1=/home/ec2-user
 export HOME_ALGO=$HOME1/algo
 export HOME_SPDK=$HOME1/spdk
 export APP=hello_world
+# rm  $HOME_ALGO/$APP/*.o
+# rm  $HOME_ALGO/$APP/$APP
 rm -f $HOME_ALGO/$APP/*.o
-rm -f $HOME_ALGO/$APP/*.d
 rm -f $HOME_ALGO/$APP/$APP
 
 compile_app() {
@@ -18,7 +19,7 @@ compile_app() {
         -I$HOME_SPDK/isalbuild \
         -I$HOME_SPDK/isa-l-crypto/.. \
         -I$HOME_SPDK/isalcryptobuild \
-        -g \
+        -g3 \
         -Wall \
         -Wextra \
         -Wno-unused-parameter \
@@ -35,7 +36,6 @@ compile_app() {
         -fstack-protector \
         -fno-common \
         -DDEBUG \
-        -g3 \
         -O0 \
         -fno-omit-frame-pointer \
         -DSPDK_GIT_COMMIT=d57bac3 \
