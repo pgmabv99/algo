@@ -5,6 +5,8 @@
 # spdk make + pages + device setup
 ```
 sudo dnf install git -y
+git config --global user.name "alexey vorovich"
+git config --global user.email "alexey.vorovich@gmail.com"
 sudo dnf install gdb -y
 git clone https://github.com/pgmabv/algo
 
