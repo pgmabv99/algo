@@ -33,28 +33,6 @@ static struct spdk_nvme_transport_id g_trid = {};
 
 static bool g_vmd = false;
 
-static void
-register_ns(struct spdk_nvme_ctrlr *ctrlr, struct spdk_nvme_ns *ns)
-{
-	struct ns_entry *entry;
-
-	if (!spdk_nvme_ns_is_active(ns)) {
-		return;
-	}
-
-	entry = malloc(sizeof(struct ns_entry));
-	if (entry == NULL) {
-		perror("ns_entry malloc");
-		exit(1);
-	}
-
-	entry->ctrlr = ctrlr;
-	entry->ns = ns;
-	TAILQ_INSERT_TAIL(&g_namespaces, entry, link);
-
-	printf("  Namespace ID: %d size: %juGB\n", spdk_nvme_ns_get_id(ns),
-	       spdk_nvme_ns_get_size(ns) / 1000000000);
-}
 
 struct hello_world_sequence {
 	struct ns_entry	*ns_entry;
@@ -304,8 +282,34 @@ hello_world(void)
 	}
 }
 
+static void
+alsp_register_ns(struct spdk_nvme_ctrlr *ctrlr, struct spdk_nvme_ns *ns)
+{
+	printf("==Entering function: %s\n", __func__);
+	struct ns_entry *entry;
+
+	if (!spdk_nvme_ns_is_active(ns)) {
+		return;
+	}
+
+	entry = malloc(sizeof(struct ns_entry));
+	if (entry == NULL) {
+		perror("ns_entry malloc");
+		exit(1);
+	}
+
+	entry->ctrlr = ctrlr;
+	entry->ns = ns;
+	TAILQ_INSERT_TAIL(&g_namespaces, entry, link);
+
+	printf("  Namespace ID: %d size: %juGB\n", spdk_nvme_ns_get_id(ns),
+	       spdk_nvme_ns_get_size(ns) / 1000000000);
+	printf("==Exiting  Function: %s\n", __func__);	   
+}
+
+
 static bool
-probe_cb(void *cb_ctx, const struct spdk_nvme_transport_id *trid,
+alsp_probe_cb(void *cb_ctx, const struct spdk_nvme_transport_id *trid,
 	 struct spdk_nvme_ctrlr_opts *opts)
 {
 	printf("Attaching to %s\n", trid->traddr);
@@ -314,9 +318,10 @@ probe_cb(void *cb_ctx, const struct spdk_nvme_transport_id *trid,
 }
 
 static void
-attach_cb(void *cb_ctx, const struct spdk_nvme_transport_id *trid,
+alsp_attach_cb(void *cb_ctx, const struct spdk_nvme_transport_id *trid,
 	  struct spdk_nvme_ctrlr *ctrlr, const struct spdk_nvme_ctrlr_opts *opts)
 {
+	printf("==Entering function: %s\n", __func__);
 	int nsid;
 	struct ctrlr_entry *entry;
 	struct spdk_nvme_ns *ns;
@@ -356,12 +361,14 @@ attach_cb(void *cb_ctx, const struct spdk_nvme_transport_id *trid,
 	 */
 	for (nsid = spdk_nvme_ctrlr_get_first_active_ns(ctrlr); nsid != 0;
 	     nsid = spdk_nvme_ctrlr_get_next_active_ns(ctrlr, nsid)) {
+		printf("call spdk_nvme_ctrlr_get_ns %d\n", nsid);
 		ns = spdk_nvme_ctrlr_get_ns(ctrlr, nsid);
 		if (ns == NULL) {
 			continue;
 		}
-		register_ns(ctrlr, ns);
+		alsp_register_ns(ctrlr, ns);
 	}
+	printf("==Exiting  Function: %s\n", __func__);
 }
 
 
@@ -402,14 +409,14 @@ alsp_init(void)
 	}
 
 	/*
-		* Start the SPDK NVMe enumeration process.  probe_cb will be called
+		* Start the SPDK NVMe enumeration process.  alsp_probe_cb will be called
 		*  for each NVMe controller found, giving our application a choice on
-		*  whether to attach to each controller.  attach_cb will then be
+		*  whether to attach to each controller.  alsp_attach_cb will then be
 		*  called for each controller after the SPDK NVMe driver has completed
 		*  initializing the controller we chose to attach.
 		*/
 	printf("call spdk_nvme_probe\n");
-	rc = spdk_nvme_probe(&g_trid, NULL, probe_cb, attach_cb, NULL);
+	rc = spdk_nvme_probe(&g_trid, NULL, alsp_probe_cb, alsp_attach_cb, NULL);
 	if (rc != 0) {
 		fprintf(stderr, "spdk_nvme_probe() failed\n");
 		rc = 1;
