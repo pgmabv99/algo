@@ -364,117 +364,20 @@ attach_cb(void *cb_ctx, const struct spdk_nvme_transport_id *trid,
 	}
 }
 
-static void
-cleanup(void)
+
+static int
+alsp_init(void)
 {
-	struct ns_entry *ns_entry, *tmp_ns_entry;
-	struct ctrlr_entry *ctrlr_entry, *tmp_ctrlr_entry;
-	struct spdk_nvme_detach_ctx *detach_ctx = NULL;
-
-	TAILQ_FOREACH_SAFE(ns_entry, &g_namespaces, link, tmp_ns_entry) {
-		TAILQ_REMOVE(&g_namespaces, ns_entry, link);
-		free(ns_entry);
-	}
-
-	TAILQ_FOREACH_SAFE(ctrlr_entry, &g_controllers, link, tmp_ctrlr_entry) {
-		TAILQ_REMOVE(&g_controllers, ctrlr_entry, link);
-		spdk_nvme_detach_async(ctrlr_entry->ctrlr, &detach_ctx);
-		free(ctrlr_entry);
-	}
-
-	if (detach_ctx) {
-		spdk_nvme_detach_poll(detach_ctx);
-	}
-}
-
-// static void
-// usage(const char *program_name)
-// {
-// 	printf("%s [options]", program_name);
-// 	printf("\t\n");
-// 	printf("options:\n");
-// 	printf("\t[-d DPDK huge memory size in MB]\n");
-// 	printf("\t[-g use single file descriptor for DPDK memory segments]\n");
-// 	printf("\t[-i shared memory group ID]\n");
-// 	printf("\t[-r remote NVMe over Fabrics target address]\n");
-// 	printf("\t[-V enumerate VMD]\n");
-// #ifdef DEBUG
-// 	printf("\t[-L enable debug logging]\n");
-// #else
-// 	printf("\t[-L enable debug logging (flag disabled, must reconfigure with --enable-debug)]\n");
-// #endif
-// }
-
-// static int
-// parse_args(int argc, char **argv, struct spdk_env_opts *env_opts)
-// {
-// 	int op, rc;
-
-
-// 	while ((op = getopt(argc, argv, "d:ghi:r:L:V")) != -1) {
-// 		switch (op) {
-// 		case 'V':
-// 			g_vmd = true;
-// 			break;
-// 		case 'i':
-// 			env_opts->shm_id = spdk_strtol(optarg, 10);
-// 			if (env_opts->shm_id < 0) {
-// 				fprintf(stderr, "Invalid shared memory ID\n");
-// 				return env_opts->shm_id;
-// 			}
-// 			break;
-// 		case 'g':
-// 			env_opts->hugepage_single_segments = true;
-// 			break;
-// 		case 'r':
-// 			if (spdk_nvme_transport_id_parse(&g_trid, optarg) != 0) {
-// 				fprintf(stderr, "Error parsing transport address\n");
-// 				return 1;
-// 			}
-// 			break;
-// 		case 'd':
-// 			env_opts->mem_size = spdk_strtol(optarg, 10);
-// 			if (env_opts->mem_size < 0) {
-// 				fprintf(stderr, "Invalid DPDK memory size\n");
-// 				return env_opts->mem_size;
-// 			}
-// 			break;
-// 		case 'L':
-// 			rc = spdk_log_set_flag(optarg);
-// 			if (rc < 0) {
-// 				fprintf(stderr, "unknown flag\n");
-// 				usage(argv[0]);
-// 				exit(EXIT_FAILURE);
-// 			}
-// #ifdef DEBUG
-// 			spdk_log_set_print_level(SPDK_LOG_DEBUG);
-// #endif
-// 			break;
-// 		case 'h':
-// 			usage(argv[0]);
-// 			exit(EXIT_SUCCESS);
-// 		default:
-// 			usage(argv[0]);
-// 			return 1;
-// 		}
-// 	}
-
-// 	return 0;
-// }
-
-int
-main(int argc, char **argv)
-{
+	printf("==Entering function: %s\n", __func__);
 	int rc;
-	
 	struct spdk_env_opts opts;
 
 	/*
-	 * SPDK relies on an abstraction around the local environment
-	 * named env that handles memory allocation and PCI device operations.
-	 * This library must be initialized first.
-	 *
-	 */
+		* SPDK relies on an abstraction around the local environment
+		* named env that handles memory allocation and PCI device operations.
+		* This library must be initialized first.
+		*
+		*/
 	opts.opts_size = sizeof(opts);
 
 	printf("call spdk_env_opts_init\n");
@@ -488,6 +391,7 @@ main(int argc, char **argv)
 	opts.name = "hello_world";
 	if (spdk_env_init(&opts) < 0) {
 		fprintf(stderr, "Unable to initialize SPDK env\n");
+		// todo: this may need to skip the alsp_deinit in exit
 		return 1;
 	}
 
@@ -498,39 +402,88 @@ main(int argc, char **argv)
 	}
 
 	/*
-	 * Start the SPDK NVMe enumeration process.  probe_cb will be called
-	 *  for each NVMe controller found, giving our application a choice on
-	 *  whether to attach to each controller.  attach_cb will then be
-	 *  called for each controller after the SPDK NVMe driver has completed
-	 *  initializing the controller we chose to attach.
-	 */
+		* Start the SPDK NVMe enumeration process.  probe_cb will be called
+		*  for each NVMe controller found, giving our application a choice on
+		*  whether to attach to each controller.  attach_cb will then be
+		*  called for each controller after the SPDK NVMe driver has completed
+		*  initializing the controller we chose to attach.
+		*/
 	printf("call spdk_nvme_probe\n");
 	rc = spdk_nvme_probe(&g_trid, NULL, probe_cb, attach_cb, NULL);
 	if (rc != 0) {
 		fprintf(stderr, "spdk_nvme_probe() failed\n");
 		rc = 1;
-		goto exit;
+		return rc;
 	}
 
 	if (TAILQ_EMPTY(&g_controllers)) {
 		fprintf(stderr, "no NVMe controllers found\n");
 		rc = 1;
-		goto exit;
+		return rc;
+	}
+	printf("==Exiting  Function: %s\n", __func__);
+	return 0;
+}
+
+static void
+alsp_deinit(void)
+{
+	printf("==Entering function: %s\n", __func__);
+	struct ns_entry *ns_entry, *tmp_ns_entry;
+	struct ctrlr_entry *ctrlr_entry, *tmp_ctrlr_entry;
+	struct spdk_nvme_detach_ctx *detach_ctx = NULL;
+
+	TAILQ_FOREACH_SAFE(ns_entry, &g_namespaces, link, tmp_ns_entry) {
+		TAILQ_REMOVE(&g_namespaces, ns_entry, link);
+		printf("call free(ns_entry)\n");
+		free(ns_entry);
 	}
 
-	printf("Initialization complete.\n");
-	hello_world();
-	printf("hello_world complete.\n");
+	TAILQ_FOREACH_SAFE(ctrlr_entry, &g_controllers, link, tmp_ctrlr_entry) {
+		TAILQ_REMOVE(&g_controllers, ctrlr_entry, link);
+		printf("call spdk_nvme_detach_async\n");
+		spdk_nvme_detach_async(ctrlr_entry->ctrlr, &detach_ctx);
+		free(ctrlr_entry);
+	}
 
-exit:
-	printf("Exiting bad 6\n");
-	fflush(stdout);
-	cleanup();
-	if (g_vmd) {
+	if (detach_ctx) {
+		printf("call spdk_nvme_detach_poll\n");
+		spdk_nvme_detach_poll(detach_ctx);
+	}
+
+	if (g_vmd)
+	{
+		printf("call spdk_vmd_fini\n");
 		spdk_vmd_fini();
 	}
-
-
+	printf("call spdk_env_fini\n");
 	spdk_env_fini();
+	printf("==Exiting  Function: %s\n", __func__);
+}
+
+int
+main(int argc, char **argv)
+{
+	int rc;
+	
+
+	rc=alsp_init();
+	if (rc != 0) {
+		goto exit_bad;
+	}
+	hello_world();
+	printf("hello_world complete.\n");
+	goto exit_good;
+
+exit_bad:
+	printf("Exiting bad \n");
+	goto exit;
+exit_good:
+	printf("Exiting good \n");
+	goto exit;
+
+exit:
+	fflush(stdout);
+	alsp_deinit();
 	return rc;
 }
