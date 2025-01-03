@@ -8,8 +8,7 @@ rm -f $HOME_ALGO/$APP/*.o
 rm -f $HOME_ALGO/$APP/*.d
 rm -f $HOME_ALGO/$APP/$APP
 echo "  compile"; 
-cc  -o $HOME_ALGO/$APP/$APP.o \
-    -c $HOME_ALGO/$APP/$APP.c \
+cc -o $HOME_ALGO/$APP/$APP.o \
     -I$HOME_SPDK/include \
     -I$HOME_SPDK/isa-l/.. \
     -I$HOME_SPDK/isalbuild \
@@ -44,18 +43,42 @@ cc  -o $HOME_ALGO/$APP/$APP.o \
     -Wstrict-prototypes \
     -Wold-style-definition \
     -std=gnu11 \
+    -c $HOME_ALGO/$APP/$APP.c \
     && mv -f $HOME_ALGO/$APP/$APP.d.tmp $HOME_ALGO/$APP/$APP.d \
     && touch -c $HOME_ALGO/$APP/$APP.o
 echo "  LINK "; 
 cc -o $HOME_ALGO/$APP/$APP \
-    $HOME_ALGO/$APP/$APP.o \
     -g \
+    -Wall \
+    -Wextra \
+    -Wno-unused-parameter \
+    -Wno-missing-field-initializers \
+    -Wmissing-declarations \
+    -fno-strict-aliasing \
+    -march=native \
+    -mno-avx512f \
+    -fno-lto \
+    -Wformat \
+    -Wformat-security \
+    -D_GNU_SOURCE \
+    -fPIC \
+    -fstack-protector \
+    -fno-common \
+    -DDEBUG \
     -g3 \
     -O0 \
+    -fno-omit-frame-pointer \
+    -DSPDK_GIT_COMMIT=d57bac3 \
     -pthread \
+    -Wno-pointer-sign \
+    -Wstrict-prototypes \
+    -Wold-style-definition \
+    -std=gnu11 \
+    -fno-lto \
     -Wl,-z,relro,-z,now \
     -Wl,-z,noexecstack \
     -fuse-ld=bfd \
+    $HOME_ALGO/$APP/$APP.o \
     -L$HOME_SPDK/build/lib \
     -Wl,--whole-archive \
     -Wl,--no-as-needed \

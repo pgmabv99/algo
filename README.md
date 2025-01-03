@@ -62,6 +62,7 @@ SPDK environment initialized successfully
 - back to aws i3.large with gp3 to save cost.
 - stepping/logging  in hello_world.  seems that spdk_nvme_ns_cmd_write does not retrun err :)
 - create by hand make2.sh to allow split of c code 
+- cleanup to remove dup flag for link
 
 ### 12/31
 - switch to amazon linux
